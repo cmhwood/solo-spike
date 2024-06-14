@@ -1,7 +1,5 @@
 const express = require('express');
-const {
-  rejectUnauthenticated,
-} = require('../modules/authentication-middleware');
+const { rejectUnauthenticated } = require('../modules/authentication-middleware');
 const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 const userStrategy = require('../strategies/user.strategy');
@@ -10,6 +8,7 @@ const router = express.Router();
 
 // Handles Ajax request for user information if user is authenticated
 router.get('/', rejectUnauthenticated, (req, res) => {
+  // ^ needs rejectUnauthenticated - router.get('/', rejectUnauthenticated, (req, res) => {
   // Send back user object from the session (previously queried from the database)
   res.send(req.user);
 });
@@ -44,7 +43,9 @@ router.post('/login', userStrategy.authenticate('local'), (req, res) => {
 router.post('/logout', (req, res, next) => {
   // Use passport's built-in method to log out the user
   req.logout((err) => {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
     res.sendStatus(200);
   });
 });
